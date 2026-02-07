@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Queen Ripa 🌹</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Hind+Siliguri:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --rose: #ff4d6d;
+            --rose-dark: #c9184a;
+            --gold: #ffb703;
+            --bg: #05010a;
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Basic Setup */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: var(--bg);
+            color: #fff;
+            font-family: 'Hind Siliguri', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Animated Background */
+        #canvas-stars {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: radial-gradient(circle at center, #1b0022 0%, #05010a 100%);
+        }
+
+        /* Floating Elements Container */
+        .decoration-layer {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Content Container */
+        .container {
+            width: 90%;
+            max-width: 450px;
+            height: auto;
+            min-height: 400px;
+            position: relative;
+            z-index: 10;
+            perspective: 1000px;
+        }
+
+        /* Card / Page Design */
+        .page {
+            position: absolute;
+            inset: 0;
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px 25px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .page.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Typography */
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: var(--rose);
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(255, 77, 109, 0.4);
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #e0e0e0;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(135deg, var(--rose), var(--rose-dark));
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(255, 77, 109, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 25px rgba(255, 77, 109, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Special Name Effect */
+        .name-reveal {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4rem;
+            background: linear-gradient(to right, #fff, var(--rose), var(--gold), #fff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s linear infinite;
+            margin: 20px 0;
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        /* Progress Dots */
+        .progress {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            transition: 0.3s;
+        }
+
+        .dot.active {
+            background: var(--rose);
+            width: 25px;
+            border-radius: 10px;
+        }
+
+        /* Animations */
+        @keyframes floatPetal {
+            0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(110vh) translateX(50px) rotate(360deg); opacity: 0; }
+        }
+
+        .petal {
+            position: absolute;
+            top: -50px;
+            user-select: none;
+            pointer-events: none;
+            animation: floatPetal linear infinite;
+        }
+
+        /* Music Toggle */
+        .music-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Responsive Fixes */
+        @media (max-width: 480px) {
+            h1 { font-size: 1.8rem; }
+            p { font-size: 1rem; }
+            .name-reveal { font-size: 3.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Stars -->
+    <canvas id="canvas-stars"></canvas>
+
+    <!-- Decoration layer for petals -->
+    <div class="decoration-layer" id="petals-container"></div>
+
+    <!-- Music Control -->
+    <div class="music-control" onclick="toggleMusic()">
+        <span id="music-icon">🎵</span>
+    </div>
+
+    <!-- Main App -->
+    <div class="container">
+        <!-- Pages with previous Rose Day wish text -->
+
+        <div class="page active" id="pg0">
+            <h1>Hello My Dear Sweetheart 🌹</h1>
+            <p>আজকের এই বিশেষ দিনে তোমার জন্য আমার মনের কিছু জমানো কথা আছে। <br> তুমি কি শুনতে চাও?</p>
+            <button class="btn" onclick="next(1)">হ্যাঁ, অবশ্যই! ❤️</button>
+        </div>
+
+        <div class="page" id="pg1">
+            <h1>The Rose Day 🥀</h1>
+            <p>গোলাপ কেবল একটি ফুল নয়, এটি ভালোবাসার ভাষা। আর আমার কাছে পৃথিবীর সবচেয়ে সুন্দর গোলাপটি হলে তুমি।</p>
+            <button class="btn" onclick="next(2)">তারপর? ✨</button>
+        </div>
+
+        <div class="page" id="pg2">
+            <h1>My Happiness 💞</h1>
+            <p>সারাদিনের ক্লান্তি শেষে তোমার ওই মিষ্টি হাসিটা আমার সব দুঃখ ভুলিয়ে দেওয়ার জন্য যথেষ্ট।</p>
+            <button class="btn" onclick="next(3)">এরপর... 😍</button>
+        </div>
+
+        <div class="page" id="pg3">
+            <h1>Distance ✈️</h1>
+            <p>হয়তো আমরা এখন দূরে, কিন্তু জানো তো? দূরত্বের সাধ্য নেই আমাদের মনের টানকে কমিয়ে দেওয়ার।</p>
+            <button class="btn" onclick="next(4)">আরও আছে? 🌸</button>
+        </div>
+
+        <div class="page" id="pg4">
+            <h1>My Bowjan 💍</h1>
+            <p>তুমি শুধু আমার গার্লফ্রেন্ড নও, তুমি আমার জীবনের অর্ধাঙ্গিনী, আমার প্রিয় 'বউজান'!</p>
+            <button class="btn" onclick="next(5)">শুনতে ভালো লাগছে.. ❤️</button>
+        </div>
+
+        <div class="page" id="pg5">
+            <h1>Promises ✨</h1>
+            <p>আজ কথা দিচ্ছি, জীবনের প্রতিটা মোড়ে, প্রতিটা কঠিন সময়ে আমি তোমার হাতটা শক্ত করে ধরে থাকব।</p>
+            <button class="btn" onclick="next(6)">Promise? 🤝</button>
+        </div>
+
+        <div class="page" id="pg6">
+            <h1>The Fragrance 🌸</h1>
+            <p>গোলাপের ঘ্রাণ যেমন চারপাশ ভরিয়ে দেয়, তোমার উপস্থিতি আমার জীবনকেও তেমন পূর্ণতা দিয়েছে।</p>
+            <button class="btn" onclick="next(7)">এরপরে... ✨</button>
+        </div>
+
+        <div class="page" id="pg7">
+            <h1>Only You ❤️</h1>
+            <p>হাজারো মানুষের ভিড়েও আমার চোখ শুধু তোমাকেই খোঁজে। কারণ তুমিই আমার একমাত্র গন্তব্য।</p>
+            <button class="btn" onclick="next(8)">আরেকটু বাকি.. 💞</button>
+        </div>
+
+        <div class="page" id="pg8">
+            <h1>My Koliza 💓</h1>
+            <p>তুমি আমার হৃদস্পন্দন, আমার কলিজা। তোমার খুশির জন্যই আমি সবকিছু করতে পারি।</p>
+            <button class="btn" onclick="next(9)">Are you ready? 🎁</button>
+        </div>
+
+        <div class="page" id="pg9">
+            <h1>Close Your Eyes 🙈</h1>
+            <p>এক মুহূর্তের জন্য চোখ বন্ধ করো আর অনুভব করো, আমি তোমার খুব কাছেই আছি...</p>
+            <button class="btn" onclick="finalReveal()">সারপ্রাইজটি খোলো 🎁</button>
+        </div>
+
+        <div class="page" id="pg10">
+            <h1 style="font-size: 1.5rem; color: #fff;">Happy Rose Day🥀</h1>
+            <div class="name-reveal">Ripa</div>
+            <p>আমি তোমাকে অনেক ভালোবাসি, আমার প্রিয় বউপাখি! <br> <b>সারাটি জীবন এভাবেই থেকো।</b> ❤️</p>
+            <button class="btn" style="background:transparent; border: 1px solid var(--rose);" onclick="reset()">আবার দেখো ✨</button>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress" id="dots"></div>
+    </div>
+
+    <!-- Hidden Audio -->
+    <audio id="bg-music" loop>
+        <source src="https://e.top4top.io/m_3690pb49u0.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Pages
+        let currentPage = 0;
+        const totalPages = 11;
+        const music = document.getElementById('bg-music');
+        const dotsContainer = document.getElementById('dots');
+
+        // Initialize Dots
+        for(let i=0;i<totalPages;i++){
+            const dot = document.createElement('div');
+            dot.className = i===0?'dot active':'dot';
+            dotsContainer.appendChild(dot);
+        }
+
+        // Page Navigation
+        function next(pageIndex){
+            if(currentPage === 0) music.play().catch(()=>{});
+            document.getElementById(`pg${currentPage}`).classList.remove('active');
+            currentPage = pageIndex;
+            document.getElementById(`pg${currentPage}`).classList.add('active');
+            document.querySelectorAll('.dot').forEach((d, idx)=>{
+                d.classList.toggle('active', idx===currentPage);
+            });
+        }
+
+        function reset(){ next(0); }
+
+        // Starfield
+        const canvas = document.getElementById('canvas-stars');
+        const ctx = canvas.getContext('2d');
+        let stars=[];
+        function resize(){
+            canvas.width=window.innerWidth;
+            canvas.height=window.innerHeight;
+            stars=[];
+            for(let i=0;i<150;i++){
+                stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,size:Math.random()*1.5,speed:Math.random()*0.5+0.2});
+            }
+        }
+        function animateStars(){
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle="#fff";
+            stars.forEach(s=>{
+                ctx.beginPath();
+                ctx.arc(s.x,s.y,s.size,0,Math.PI*2);
+                ctx.fill();
+                s.y+=s.speed;
+                if(s.y>canvas.height) s.y=0;
+            });
+            requestAnimationFrame(animateStars);
+        }
+
+        // Petals
+        const petalContainer = document.getElementById('petals-container');
+        function createPetal(){
+            const petals=['🌹','🌸','💖','✨','🥀'];
+            const p = document.createElement('div');
+            p.className='petal';
+            p.innerHTML=petals[Math.floor(Math.random()*petals.length)];
+            p.style.left=Math.random()*100+'vw';
+            p.style.fontSize=(Math.random()*20+15)+'px';
+            p.style.animationDuration=(Math.random()*3+5)+'s';
+            petalContainer.appendChild(p);
+            setTimeout(()=>p.remove(),8000);
+        }
+        setInterval(createPetal,500);
+
+        // Final Reveal
+        function finalReveal(){
+            next(10);
+            for(let i=0;i<50;i++){
+                setTimeout(()=>{
+                    const burst = document.createElement('div');
+                    burst.className='petal';
+                    burst.innerHTML='🌹';
+                    burst.style.left=Math.random()*100+'vw';
+                    burst.style.animationDuration='3s';
+                    petalContainer.appendChild(burst);
+                }, i*100);
+            }
+        }
+
+        // Music Toggle
+        function toggleMusic(){
+            if(music.paused){ music.play(); document.getElementById('music-icon').innerText='🎵'; }
+            else{ music.pause(); document.getElementById('music-icon').innerText='🔇'; }
+        }
+
+        // Mouse Sparkle
+        document.addEventListener('mousemove',e=>{
+            if(Math.random()>0.9){
+                const sp=document.createElement('div');
+                sp.innerText='✨';
+                sp.style.position='fixed';
+                sp.style.left=e.clientX+'px';
+                sp.style.top=e.clientY+'px';
+                sp.style.pointerEvents='none';
+                sp.style.zIndex='1000';
+                sp.style.fontSize='12px';
+                sp.style.transition='0.8s ease-out';
+                document.body.appendChild(sp);
+                setTimeout(()=>{
+                    sp.style.transform=`translateY(30px) scale(0)`;
+                    sp.style.opacity='0';
+                    setTimeout(()=>sp.remove(),800);
+                },10);
+            }
+        });
+
+        // Init
+        window.addEventListener('resize',resize);
+        resize();
+        animateStars();
+    </script>
+
+</body>
+</html>
