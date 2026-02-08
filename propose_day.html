@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Ripa 💍</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,600&family=Montserrat:wght@200;400&display=swap" rel="stylesheet">
+
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    height: 100vh;
+    background: #000;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    perspective: 1000px;
+  }
+
+  /* Shimmering Particle Canvas */
+  #canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .main-container {
+    position: relative;
+    z-index: 10;
+    width: 90%;
+    max-width: 400px;
+    transform-style: preserve-3d;
+  }
+
+  .glass-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.01));
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 60px 30px;
+    text-align: center;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    display: none;
+    animation: reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .glass-card.active { display: block; }
+
+  @keyframes reveal {
+    from { opacity: 0; transform: translateY(30px) rotateX(-15deg); filter: blur(10px); }
+    to { opacity: 1; transform: translateY(0) rotateX(0); filter: blur(0); }
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem;
+    font-style: italic;
+    background: linear-gradient(to right, #fff, #d4af37, #fff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 25px;
+    font-weight: 600;
+  }
+
+  p {
+    font-weight: 200;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 40px;
+    letter-spacing: 1px;
+  }
+
+  .btn-gold {
+    background: none;
+    border: 1px solid #d4af37;
+    color: #d4af37;
+    padding: 15px 40px;
+    border-radius: 0;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 4px;
+    cursor: pointer;
+    transition: 0.5s;
+    position: relative;
+  }
+
+  .btn-gold:hover {
+    background: #d4af37;
+    color: #000;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+  }
+
+  .name-luxury {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4.5rem;
+    font-style: italic;
+    display: block;
+    margin: 10px 0;
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+  }
+
+  .heartbeat {
+    color: #ff4d6d;
+    font-size: 2rem;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+<audio id="bgm" loop><source src="https://d.top4top.io/m_3691fwdjo0.mp3" type="audio/mpeg"></audio>
+
+<div class="main-container" id="tilt-container">
+  
+  <div class="glass-card active" id="step0">
+    <h1>Dear Ripa</h1>
+    <p>Every soul has a frequency. Mine only resonates when you are near.</p>
+    <button class="btn-gold" onclick="next(0)">Enter</button>
+  </div>
+
+  <div class="glass-card" id="step1">
+    <h1>The Promise</h1>
+    <p>I don't want to just be a chapter in your life. I want to be the ink that writes the rest of your story.</p>
+    <button class="btn-gold" onclick="next(1)">Continue</button>
+  </div>
+
+  <div class="glass-card" id="step2">
+    <h1>The Moment</h1>
+    <p>Words are never enough, but my heart has a question it’s been waiting to ask...</p>
+    <button class="btn-gold" onclick="next(2)">Ready?</button>
+  </div>
+
+  <div class="glass-card" id="step3">
+    <div class="heartbeat">💍</div>
+    <span class="name-luxury">Ripa</span>
+    <p>Will you be mine, today and for all the tomorrows we haven’t seen yet?</p>
+  </div>
+
+</div>
+
+<script>
+  // Particle background effect
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+
+  function initCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  initCanvas();
+
+  class Particle {
+    constructor() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 2;
+      this.speedX = Math.random() * 0.5 - 0.25;
+      this.speedY = Math.random() * 0.5 - 0.25;
+      this.alpha = Math.random();
+    }
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      if (this.x > canvas.width) this.x = 0;
+      if (this.y > canvas.height) this.y = 0;
+    }
+    draw() {
+      ctx.fillStyle = `rgba(212, 175, 55, ${this.alpha})`;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < 150; i++) particles.push(new Particle());
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  function next(current) {
+    if(current === 0) document.getElementById('bgm').play().catch(()=>{});
+    document.getElementById(`step${current}`).classList.remove('active');
+    document.getElementById(`step${current+1}`).classList.add('active');
+  }
+
+  // 3D Tilt Effect
+  const container = document.getElementById('tilt-container');
+  document.addEventListener('mousemove', (e) => {
+    let x = (window.innerWidth / 2 - e.pageX) / 25;
+    let y = (window.innerHeight / 2 - e.pageY) / 25;
+    container.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+  });
+</script>
+
+</body>
+</html>
